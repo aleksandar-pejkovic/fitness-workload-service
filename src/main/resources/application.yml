@@ -1,0 +1,9 @@
+server:
+  port: 8092
+spring:
+  application:
+    name: fitness-working-hours-calculation-service
+  profiles:
+    active: "helper"
+  config:
+    import: [optional:configserver:http://root:s3cr3t@localhost:8888, classpath:secret.yml]
