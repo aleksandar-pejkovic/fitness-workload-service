@@ -1,7 +1,8 @@
-package com.example.fitnessworkinghourscalculationservice.model;
+package com.example.fitnessworkloadservice.model;
 
-import com.example.fitnessworkinghourscalculationservice.enums.MonthEnum;
+import com.example.fitnessworkloadservice.enums.MonthEnum;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -16,18 +17,22 @@ import lombok.Getter;
 @Entity
 @Getter
 @Builder
-public class Month {
+public class MonthSummary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "trainer_id")
+    private Trainer trainer;
 
     @Enumerated(EnumType.ORDINAL)
-    private MonthEnum month;
+    private MonthEnum monthEnum;
 
-    @ManyToOne
-    @JoinColumn(name = "year_id")
+    @ManyToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "year_id", unique = true)
     private Year year;
 
-    private int trainingSummaryDuration;
+    private int trainingDurationSum;
 }

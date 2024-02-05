@@ -1,13 +1,9 @@
-package com.example.fitnessworkinghourscalculationservice.model;
+package com.example.fitnessworkloadservice.model;
 
-import java.util.List;
-
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -27,7 +23,4 @@ public class Trainer {
     private String lastName;
 
     private boolean status;
-
-    @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
-    private List<Year> years;
 }

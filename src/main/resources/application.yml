@@ -2,7 +2,7 @@ server:
   port: 8092
 spring:
   application:
-    name: fitness-working-hours-calculation-service
+    name: fitness-workload-service
   profiles:
     active: "helper"
   config:

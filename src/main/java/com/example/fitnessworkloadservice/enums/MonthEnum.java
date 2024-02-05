@@ -1,4 +1,4 @@
-package com.example.fitnessworkinghourscalculationservice.enums;
+package com.example.fitnessworkloadservice.enums;
 
 public enum MonthEnum {
 
@@ -16,6 +16,15 @@ public enum MonthEnum {
     DECEMBER(12);
 
     private final int monthValue;
+
+    public static MonthEnum getMonthEnum(int monthValue) {
+        for (MonthEnum month : MonthEnum.values()) {
+            if (month.getMonthValue() == monthValue) {
+                return month;
+            }
+        }
+        throw new IllegalArgumentException("Invalid month value: " + monthValue);
+    }
 
     MonthEnum(int monthValue) {
         this.monthValue = monthValue;
