@@ -6,9 +6,9 @@ import org.springframework.transaction.annotation.Transactional;
 import com.example.fitnessworkloadservice.dto.TrainingRequestDTO;
 import com.example.fitnessworkloadservice.enums.ActionType;
 import com.example.fitnessworkloadservice.enums.MonthEnum;
-import com.example.fitnessworkloadservice.model.Month;
+import com.example.fitnessworkloadservice.model.MonthSummary;
 import com.example.fitnessworkloadservice.model.Trainer;
-import com.example.fitnessworkloadservice.model.Year;
+import com.example.fitnessworkloadservice.model.YearSummary;
 import com.example.fitnessworkloadservice.repository.MonthRepository;
 import com.example.fitnessworkloadservice.repository.TrainerRepository;
 import com.example.fitnessworkloadservice.repository.YearRepository;
@@ -32,39 +32,39 @@ public class WorkloadService {
     public void processTrainingRequest(TrainingRequestDTO trainingRequestDTO) {
         Trainer trainer = trainerRepository.findByUsername(trainingRequestDTO.getUsername()).orElseThrow();
 
-        Year currentYear = getOrCreateYear(trainer, trainingRequestDTO.getTrainingDate().getYear());
+        YearSummary currentYearSummary = getOrCreateYear(trainer, trainingRequestDTO.getTrainingDate().getYear());
 
-        Month currentMonth = getOrCreateMonth(currentYear, trainingRequestDTO.getTrainingDate().getMonth());
+        MonthSummary currentMonthSummary = getOrCreateMonth(currentYearSummary, trainingRequestDTO.getTrainingDate().getMonth());
 
         if (trainingRequestDTO.getActionType() == ActionType.ADD) {
-            currentMonth.increaseDurationSum(trainingRequestDTO.getTrainingDuration());
+            currentMonthSummary.increaseDurationSum(trainingRequestDTO.getTrainingDuration());
         } else if (trainingRequestDTO.getActionType() == ActionType.DELETE) {
-            currentMonth.decreaseDurationSum(trainingRequestDTO.getTrainingDuration());
+            currentMonthSummary.decreaseDurationSum(trainingRequestDTO.getTrainingDuration());
         }
 
-        monthRepository.save(currentMonth);
+        monthRepository.save(currentMonthSummary);
     }
 
-    private Year getOrCreateYear(Trainer trainer, int yearValue) {
-        return yearRepository.findByTrainerAndYear(trainer, yearValue)
+    private YearSummary getOrCreateYear(Trainer trainer, int yearValue) {
+        return yearRepository.findByTrainerAndYearValue(trainer, yearValue)
                 .orElseGet(() -> {
-                    Year newYear = Year.builder()
-                            .year(yearValue)
+                    YearSummary newYearSummary = YearSummary.builder()
+                            .yearValue(yearValue)
                             .trainer(trainer)
                             .build();
-                    return yearRepository.save(newYear);
+                    return yearRepository.save(newYearSummary);
                 });
     }
 
-    private Month getOrCreateMonth(Year year, int monthValue) {
-        return monthRepository.findByYearAndMonthEnum(year, MonthEnum.getMonthEnum(monthValue))
+    private MonthSummary getOrCreateMonth(YearSummary yearSummary, int monthValue) {
+        return monthRepository.findByYearSummaryAndMonthEnum(yearSummary, MonthEnum.getMonthEnum(monthValue))
                 .orElseGet(() -> {
-                    Month newMonth = Month.builder()
-                            .year(year)
+                    MonthSummary newMonthSummary = MonthSummary.builder()
+                            .yearSummary(yearSummary)
                             .monthEnum(MonthEnum.getMonthEnum(monthValue))
                             .trainingDurationSum(0)
                             .build();
-                    return monthRepository.save(newMonth);
+                    return monthRepository.save(newMonthSummary);
                 });
     }
 }

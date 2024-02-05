@@ -16,18 +16,18 @@ import lombok.Getter;
 @Entity
 @Getter
 @Builder
-public class Month {
+public class MonthSummary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
     @Enumerated(EnumType.ORDINAL)
     private MonthEnum monthEnum;
 
     @ManyToOne
-    @JoinColumn(name = "year_id")
-    private Year year;
+    @JoinColumn(name = "year_summary_id")
+    private YearSummary yearSummary;
 
     private int trainingDurationSum;
 

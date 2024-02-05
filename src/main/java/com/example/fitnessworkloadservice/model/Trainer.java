@@ -29,5 +29,5 @@ public class Trainer {
     private boolean status;
 
     @OneToMany(mappedBy = "trainer", cascade = CascadeType.ALL)
-    private List<Year> years;
+    private List<YearSummary> yearSummaries;
 }

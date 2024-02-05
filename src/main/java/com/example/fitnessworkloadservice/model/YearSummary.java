@@ -3,7 +3,6 @@ package com.example.fitnessworkloadservice.model;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -17,19 +16,18 @@ import lombok.Getter;
 @Entity
 @Getter
 @Builder
-public class Year {
+public class YearSummary {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private long id;
 
-    @Column(unique = true)
-    private int year;
+    private int yearValue;
 
     @ManyToOne
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
-    @OneToMany(mappedBy = "year", cascade = CascadeType.ALL)
-    private List<Month> months;
+    @OneToMany(mappedBy = "yearSummary", cascade = CascadeType.ALL)
+    private List<MonthSummary> monthSummaries;
 }
