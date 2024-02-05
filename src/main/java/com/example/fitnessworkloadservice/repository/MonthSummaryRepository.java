@@ -10,7 +10,7 @@ import com.example.fitnessworkloadservice.enums.MonthEnum;
 import com.example.fitnessworkloadservice.model.MonthSummary;
 
 @Repository
-public interface MonthlySummaryRepository extends ListCrudRepository<MonthSummary, Long> {
+public interface MonthSummaryRepository extends ListCrudRepository<MonthSummary, Long> {
 
     Optional<MonthSummary> findByTrainerUsernameAndYearYearAndMonthEnum(
             @Param("username") String username,

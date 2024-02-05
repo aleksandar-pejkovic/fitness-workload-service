@@ -2,14 +2,14 @@ package com.example.fitnessworkloadservice.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fitnessworkloadservice.dto.WorkloadRequestDTO;
+import com.example.fitnessworkloadservice.enums.ActionType;
 import com.example.fitnessworkloadservice.service.WorkloadService;
 
 import jakarta.validation.Valid;
@@ -26,15 +26,13 @@ public class WorkloadController {
         this.workloadService = workloadService;
     }
 
-    @PostMapping
+    @PutMapping
     public ResponseEntity<String> addWorkload(@Valid @RequestBody WorkloadRequestDTO workloadRequestDTO) {
+        if (workloadRequestDTO.getActionType().equals(ActionType.ADD)) {
 
-        return ResponseEntity.ok("Workload processed successfully");
-    }
+        } else if (workloadRequestDTO.getActionType().equals(ActionType.DELETE)) {
 
-    @DeleteMapping
-    public ResponseEntity<String> removeWorkload(@Valid @RequestBody WorkloadRequestDTO workloadRequestDTO) {
-
+        }
         return ResponseEntity.ok("Workload processed successfully");
     }
 

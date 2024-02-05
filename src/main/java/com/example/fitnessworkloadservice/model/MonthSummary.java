@@ -23,7 +23,7 @@ public class MonthSummary {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "trainer_id")
     private Trainer trainer;
 
@@ -35,4 +35,12 @@ public class MonthSummary {
     private Year year;
 
     private int trainingDurationSum;
+
+    public void increaseDurationSum(int trainingDuration) {
+        this.trainingDurationSum += trainingDuration;
+    }
+
+    public void decreaseDurationSum(int trainingDuration) {
+        this.trainingDurationSum = Math.max(0, this.getTrainingDurationSum() - trainingDuration);
+    }
 }
