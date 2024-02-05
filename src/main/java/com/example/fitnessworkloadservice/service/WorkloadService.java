@@ -3,72 +3,71 @@ package com.example.fitnessworkloadservice.service;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.example.fitnessworkloadservice.dto.WorkloadRequestDTO;
+import com.example.fitnessworkloadservice.dto.TrainingRequestDTO;
 import com.example.fitnessworkloadservice.enums.MonthEnum;
-import com.example.fitnessworkloadservice.model.MonthSummary;
+import com.example.fitnessworkloadservice.model.Month;
 import com.example.fitnessworkloadservice.model.Trainer;
 import com.example.fitnessworkloadservice.model.Year;
-import com.example.fitnessworkloadservice.repository.MonthSummaryRepository;
+import com.example.fitnessworkloadservice.repository.MonthRepository;
 import com.example.fitnessworkloadservice.repository.YearRepository;
 
 @Service
 public class WorkloadService {
 
-    private final MonthSummaryRepository monthSummaryRepository;
+    private final MonthRepository monthRepository;
 
     private final YearRepository yearRepository;
 
-    public WorkloadService(MonthSummaryRepository monthSummaryRepository, YearRepository yearRepository) {
-        this.monthSummaryRepository = monthSummaryRepository;
+    public WorkloadService(MonthRepository monthRepository, YearRepository yearRepository) {
+        this.monthRepository = monthRepository;
         this.yearRepository = yearRepository;
     }
 
     @Transactional
-    public void increaseTrainingDuration(WorkloadRequestDTO workloadRequestDTO) {
-        MonthSummary monthSummary = getOrCreateMonthSummary(workloadRequestDTO);
-        monthSummary.increaseDurationSum(workloadRequestDTO.getTrainingDuration());
-        monthSummaryRepository.save(monthSummary);
+    public void increaseTrainingDuration(TrainingRequestDTO trainingRequestDTO) {
+        Month month = getOrCreateMonthSummary(trainingRequestDTO);
+        month.increaseDurationSum(trainingRequestDTO.getTrainingDuration());
+        monthRepository.save(month);
     }
 
     @Transactional
-    public void decreaseTrainingDuration(WorkloadRequestDTO workloadRequestDTO) {
-        MonthSummary monthSummary = getOrCreateMonthSummary(workloadRequestDTO);
-        monthSummary.decreaseDurationSum(workloadRequestDTO.getTrainingDuration());
-        monthSummaryRepository.save(monthSummary);
+    public void decreaseTrainingDuration(TrainingRequestDTO trainingRequestDTO) {
+        Month month = getOrCreateMonthSummary(trainingRequestDTO);
+        month.decreaseDurationSum(trainingRequestDTO.getTrainingDuration());
+        monthRepository.save(month);
     }
 
-    private MonthSummary getOrCreateMonthSummary(WorkloadRequestDTO workloadRequestDTO) {
-        return monthSummaryRepository.findByTrainerUsernameAndYearYearAndMonthEnum(
-                        workloadRequestDTO.getUsername(),
-                        workloadRequestDTO.getTrainingDate().getYear() + 1900,
-                        MonthEnum.getMonthEnum(workloadRequestDTO.getTrainingDate().getMonth() + 1)
+    private Month getOrCreateMonthSummary(TrainingRequestDTO trainingRequestDTO) {
+        return monthRepository.findByTrainerUsernameAndYearYearAndMonthEnum(
+                        trainingRequestDTO.getUsername(),
+                        trainingRequestDTO.getTrainingDate().getYear() + 1900,
+                        MonthEnum.getMonthEnum(trainingRequestDTO.getTrainingDate().getMonth() + 1)
                 )
-                .orElseGet(() -> createMonthSummary(workloadRequestDTO));
+                .orElseGet(() -> createMonthSummary(trainingRequestDTO));
     }
 
-    private MonthSummary createMonthSummary(WorkloadRequestDTO workloadRequestDTO) {
+    private Month createMonthSummary(TrainingRequestDTO trainingRequestDTO) {
         Trainer trainer = Trainer.builder()
-                .username(workloadRequestDTO.getUsername())
-                .firstName(workloadRequestDTO.getFirstName())
-                .lastName(workloadRequestDTO.getLastName())
-                .status(workloadRequestDTO.isActive())
+                .username(trainingRequestDTO.getUsername())
+                .firstName(trainingRequestDTO.getFirstName())
+                .lastName(trainingRequestDTO.getLastName())
+                .status(trainingRequestDTO.isActive())
                 .build();
 
-        int yearValue = workloadRequestDTO.getTrainingDate().getYear() + 1900;
+        int yearValue = trainingRequestDTO.getTrainingDate().getYear() + 1900;
 
         Year yearEntity = yearRepository.findByYear(yearValue)
                 .orElse(Year.builder()
                         .year(yearValue)
                         .build());
 
-        MonthSummary monthSummary = MonthSummary.builder()
-                .trainer(trainer)
+        Month month = Month.builder()
                 .year(yearEntity)
-                .monthEnum(MonthEnum.getMonthEnum(workloadRequestDTO.getTrainingDate().getMonth() + 1))
+                .monthEnum(MonthEnum.getMonthEnum(trainingRequestDTO.getTrainingDate().getMonth() + 1))
                 .trainingDurationSum(0)
                 .build();
 
-        return monthSummaryRepository.save(monthSummary);
+        return monthRepository.save(month);
     }
 
 }

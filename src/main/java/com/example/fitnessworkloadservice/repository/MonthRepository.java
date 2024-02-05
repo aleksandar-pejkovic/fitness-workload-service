@@ -7,12 +7,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.example.fitnessworkloadservice.enums.MonthEnum;
-import com.example.fitnessworkloadservice.model.MonthSummary;
+import com.example.fitnessworkloadservice.model.Month;
 
 @Repository
-public interface MonthSummaryRepository extends ListCrudRepository<MonthSummary, Long> {
+public interface MonthRepository extends ListCrudRepository<Month, Long> {
 
-    Optional<MonthSummary> findByTrainerUsernameAndYearYearAndMonthEnum(
+    Optional<Month> findByTrainerUsernameAndYearYearAndMonthEnum(
             @Param("username") String username,
             @Param("year") int year,
             @Param("monthEnum") MonthEnum monthEnum

@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class WorkloadRequestDTO {
+public class TrainingRequestDTO {
 
     @NotNull
     private String username;
