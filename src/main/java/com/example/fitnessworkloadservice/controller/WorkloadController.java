@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.fitnessworkloadservice.dto.TrainingRequestDTO;
-import com.example.fitnessworkloadservice.enums.ActionType;
 import com.example.fitnessworkloadservice.service.WorkloadService;
 
 import jakarta.validation.Valid;
@@ -28,11 +27,7 @@ public class WorkloadController {
 
     @PutMapping
     public ResponseEntity<String> addWorkload(@Valid @RequestBody TrainingRequestDTO trainingRequestDTO) {
-        if (trainingRequestDTO.getActionType().equals(ActionType.ADD)) {
-
-        } else if (trainingRequestDTO.getActionType().equals(ActionType.DELETE)) {
-
-        }
+        workloadService.processTrainingRequest(trainingRequestDTO);
         return ResponseEntity.ok("Workload processed successfully");
     }
 
