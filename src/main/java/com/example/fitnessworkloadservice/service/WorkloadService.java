@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.fitnessworkloadservice.dto.TrainingRequestDTO;
+import com.example.fitnessworkloadservice.dto.WorkloadRequestDTO;
 import com.example.fitnessworkloadservice.enums.ActionType;
 import com.example.fitnessworkloadservice.enums.MonthEnum;
 import com.example.fitnessworkloadservice.model.MonthSummary;
@@ -16,6 +17,7 @@ import com.example.fitnessworkloadservice.repository.YearRepository;
 @Service
 public class WorkloadService {
 
+    public static final int MINUTES_IN_HOUR = 60;
     private final MonthRepository monthRepository;
 
     private final YearRepository yearRepository;
@@ -43,6 +45,16 @@ public class WorkloadService {
         }
 
         monthRepository.save(currentMonthSummary);
+    }
+
+    @Transactional(readOnly = true)
+    public int getTrainersWorkload(WorkloadRequestDTO workloadRequestDTO) {
+        Trainer trainer = trainerRepository.findByUsername(workloadRequestDTO.getUsername()).orElseThrow();
+        YearSummary year =
+                yearRepository.findByTrainerAndYearValue(trainer, workloadRequestDTO.getYearValue()).orElseThrow();
+        MonthSummary month = monthRepository.findByYearSummaryAndMonthEnum(year,
+                MonthEnum.getMonthEnum(workloadRequestDTO.getMonthValue())).orElseThrow();
+        return month.getTrainingDurationSum() / MINUTES_IN_HOUR;
     }
 
     private YearSummary getOrCreateYear(Trainer trainer, int yearValue) {
