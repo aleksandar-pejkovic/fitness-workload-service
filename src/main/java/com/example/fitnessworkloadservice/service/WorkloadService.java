@@ -30,7 +30,7 @@ public class WorkloadService {
 
     @Transactional
     public void processTrainingRequest(TrainingRequestDTO trainingRequestDTO) {
-        Trainer trainer = trainerRepository.findByUsername(trainingRequestDTO.getUsername()).orElseThrow();
+        Trainer trainer = getOrCreateTrainer(trainingRequestDTO);
 
         YearSummary currentYearSummary = getOrCreateYear(trainer, trainingRequestDTO.getTrainingDate().getYear());
 
@@ -45,11 +45,33 @@ public class WorkloadService {
         monthRepository.save(currentMonthSummary);
     }
 
+    @Transactional(readOnly = true)
+    public int getWorkload(String username, int year, int month) {
+        Trainer trainer = trainerRepository.findByUsername(username).orElseThrow();
+        YearSummary yearSummary = yearRepository.findByTrainerAndYearValue(trainer, year).orElseThrow();
+        MonthSummary monthSummary = monthRepository.findByYearSummaryAndMonthEnum(yearSummary,
+                MonthEnum.getMonthEnum(month)).orElseThrow();
+        return monthSummary.getTrainingDurationSum() / 60;
+    }
+
+    private Trainer getOrCreateTrainer(TrainingRequestDTO trainingRequestDTO) {
+        return trainerRepository.findByUsername(trainingRequestDTO.getUsername())
+                .orElseGet(() -> {
+                    Trainer trainer = Trainer.builder()
+                            .username(trainingRequestDTO.getUsername())
+                            .firstName(trainingRequestDTO.getFirstName())
+                            .lastName(trainingRequestDTO.getLastName())
+                            .status(trainingRequestDTO.isActive())
+                            .build();
+                    return trainerRepository.save(trainer);
+                });
+    }
+
     private YearSummary getOrCreateYear(Trainer trainer, int yearValue) {
         return yearRepository.findByTrainerAndYearValue(trainer, yearValue)
                 .orElseGet(() -> {
                     YearSummary newYearSummary = YearSummary.builder()
-                            .yearValue(yearValue)
+                            .yearValue(yearValue + 1900)
                             .trainer(trainer)
                             .build();
                     return yearRepository.save(newYearSummary);
@@ -61,7 +83,7 @@ public class WorkloadService {
                 .orElseGet(() -> {
                     MonthSummary newMonthSummary = MonthSummary.builder()
                             .yearSummary(yearSummary)
-                            .monthEnum(MonthEnum.getMonthEnum(monthValue))
+                            .monthEnum(MonthEnum.getMonthEnum(monthValue + 1))
                             .trainingDurationSum(0)
                             .build();
                     return monthRepository.save(newMonthSummary);

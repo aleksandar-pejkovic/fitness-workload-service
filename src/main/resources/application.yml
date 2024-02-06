@@ -7,7 +7,9 @@ spring:
     active: "helper"
   config:
     import: [optional:configserver:http://root:s3cr3t@localhost:8888, classpath:secret.yml]
-
-feign:
-  circuitbreaker:
-    enabled: true
+  h2:
+    console.enabled: true
+#
+#feign:
+#  circuitbreaker:
+#    enabled: true

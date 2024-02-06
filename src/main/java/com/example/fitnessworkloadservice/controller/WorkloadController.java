@@ -3,8 +3,9 @@ package com.example.fitnessworkloadservice.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,7 +16,8 @@ import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@RestController("/api/workload")
+@RestController
+@RequestMapping(value = "/api/workload")
 public class WorkloadController {
 
     private final WorkloadService workloadService;
@@ -25,19 +27,19 @@ public class WorkloadController {
         this.workloadService = workloadService;
     }
 
-    @PutMapping
-    public ResponseEntity<String> addWorkload(@Valid @RequestBody TrainingRequestDTO trainingRequestDTO) {
+    @PostMapping
+    public ResponseEntity<String> processWorkload(@Valid @RequestBody TrainingRequestDTO trainingRequestDTO) {
         workloadService.processTrainingRequest(trainingRequestDTO);
         return ResponseEntity.ok("Workload processed successfully");
     }
 
     @GetMapping
-    public ResponseEntity<Integer> getWorkload(
+    public int getWorkload(
             @RequestParam String username,
             @RequestParam int year,
             @RequestParam int month
     ) {
         log.info("Endpoint '/api/workload' with GET mapping was called to get trainers workload");
-        return ResponseEntity.ok(1);
+        return workloadService.getWorkload(username, year, month);
     }
 }
