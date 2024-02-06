@@ -69,10 +69,11 @@ public class WorkloadService {
     }
 
     private YearSummary getOrCreateYear(Trainer trainer, int yearValue) {
-        return yearRepository.findByTrainerAndYearValue(trainer, yearValue)
+        int adjustedYear = yearValue + 1900;
+        return yearRepository.findByTrainerAndYearValue(trainer, adjustedYear)
                 .orElseGet(() -> {
                     YearSummary newYearSummary = YearSummary.builder()
-                            .yearValue(yearValue + 1900)
+                            .yearValue(adjustedYear)
                             .trainer(trainer)
                             .build();
                     return yearRepository.save(newYearSummary);
@@ -80,11 +81,12 @@ public class WorkloadService {
     }
 
     private MonthSummary getOrCreateMonth(YearSummary yearSummary, int monthValue) {
-        return monthRepository.findByYearSummaryAndMonthEnum(yearSummary, MonthEnum.getMonthEnum(monthValue))
+        int adjustedMonth = monthValue + 1;
+        return monthRepository.findByYearSummaryAndMonthEnum(yearSummary, MonthEnum.getMonthEnum(adjustedMonth))
                 .orElseGet(() -> {
                     MonthSummary newMonthSummary = MonthSummary.builder()
                             .yearSummary(yearSummary)
-                            .monthEnum(MonthEnum.getMonthEnum(monthValue + 1))
+                            .monthEnum(MonthEnum.getMonthEnum(adjustedMonth))
                             .trainingDurationSum(0)
                             .build();
                     return monthRepository.save(newMonthSummary);
