@@ -4,7 +4,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.example.fitnessworkloadservice.dto.TrainingRequestDTO;
-import com.example.fitnessworkloadservice.dto.WorkloadRequestDTO;
 import com.example.fitnessworkloadservice.enums.ActionType;
 import com.example.fitnessworkloadservice.enums.MonthEnum;
 import com.example.fitnessworkloadservice.model.MonthSummary;
@@ -48,22 +47,12 @@ public class WorkloadService {
     }
 
     @Transactional(readOnly = true)
-    public int getTrainersWorkload(WorkloadRequestDTO workloadRequestDTO) {
-        Trainer trainer = trainerRepository.findByUsername(workloadRequestDTO.getUsername()).orElseThrow();
-        YearSummary year =
-                yearRepository.findByTrainerAndYearValue(trainer, workloadRequestDTO.getYearValue()).orElseThrow();
-        MonthSummary month = monthRepository.findByYearSummaryAndMonthEnum(year,
-                MonthEnum.getMonthEnum(workloadRequestDTO.getMonthValue())).orElseThrow();
-        return month.getTrainingDurationSum() / MINUTES_IN_HOUR;
-    }
-
-    @Transactional(readOnly = true)
     public int getWorkload(String username, int year, int month) {
         Trainer trainer = trainerRepository.findByUsername(username).orElseThrow();
         YearSummary yearSummary = yearRepository.findByTrainerAndYearValue(trainer, year).orElseThrow();
         MonthSummary monthSummary = monthRepository.findByYearSummaryAndMonthEnum(yearSummary,
                 MonthEnum.getMonthEnum(month)).orElseThrow();
-        return monthSummary.getTrainingDurationSum() / 60;
+        return monthSummary.getTrainingDurationSum() / MINUTES_IN_HOUR;
     }
 
     private Trainer getOrCreateTrainer(TrainingRequestDTO trainingRequestDTO) {
