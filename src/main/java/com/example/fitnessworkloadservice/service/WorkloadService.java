@@ -1,5 +1,9 @@
 package com.example.fitnessworkloadservice.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.OAuth2AuthenticatedPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,6 +53,10 @@ public class WorkloadService {
 
         monthRepository.save(currentMonthSummary);
         log.info("Training request processed successfully");
+        log.info("Workload for trainer {} in year {} and month {} is {}", trainingRequestDTO.getUsername(),
+                trainingRequestDTO.getTrainingDate().getYear() + 1900,
+                trainingRequestDTO.getTrainingDate().getMonth() + 1,
+                currentMonthSummary.getTrainingDurationSum());
     }
 
     @Transactional(readOnly = true)
