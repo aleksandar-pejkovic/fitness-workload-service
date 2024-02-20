@@ -13,10 +13,14 @@ import com.example.fitnessworkloadservice.repository.MonthRepository;
 import com.example.fitnessworkloadservice.repository.TrainerRepository;
 import com.example.fitnessworkloadservice.repository.YearRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Service
 public class WorkloadService {
 
-    public static final int MINUTES_IN_HOUR = 60;
+    private static final int MINUTES_IN_HOUR = 60;
+
     private final MonthRepository monthRepository;
 
     private final YearRepository yearRepository;
@@ -44,6 +48,7 @@ public class WorkloadService {
         }
 
         monthRepository.save(currentMonthSummary);
+        log.info("Training request processed successfully");
     }
 
     @Transactional(readOnly = true)
@@ -52,6 +57,8 @@ public class WorkloadService {
         YearSummary yearSummary = yearRepository.findByTrainerAndYearValue(trainer, year).orElseThrow();
         MonthSummary monthSummary = monthRepository.findByYearSummaryAndMonthEnum(yearSummary,
                 MonthEnum.getMonthEnum(month)).orElseThrow();
+        log.info("Workload for trainer {} in year {} and month {} is {}", username, year, month,
+                monthSummary.getTrainingDurationSum());
         return monthSummary.getTrainingDurationSum() / MINUTES_IN_HOUR;
     }
 

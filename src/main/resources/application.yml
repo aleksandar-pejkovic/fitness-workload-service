@@ -6,10 +6,13 @@ spring:
   profiles:
     active: "helper"
   config:
-    import: [optional:configserver:http://root:s3cr3t@localhost:8888, classpath:secret.yml]
+    import: [ optional:configserver:http://root:s3cr3t@localhost:8888, classpath:secret.yml ]
   h2:
     console.enabled: true
-#
-#feign:
-#  circuitbreaker:
-#    enabled: true
+
+logging:
+  level:
+    org:
+      springframework:
+        transaction:
+          interceptor: TRACE
