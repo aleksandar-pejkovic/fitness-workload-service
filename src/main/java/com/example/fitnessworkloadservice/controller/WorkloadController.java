@@ -29,7 +29,7 @@ public class WorkloadController {
 
     @PostMapping
     public ResponseEntity<String> processWorkload(@Valid @RequestBody TrainingRequestDTO trainingRequestDTO) {
-        log.info("Endpoint '/api/workload' with POST mapping was called to get trainers workload");
+        log.info("Endpoint '/api/workload' with POST mapping was called to update trainers workload");
         workloadService.processTrainingRequest(trainingRequestDTO);
         return ResponseEntity.ok("Workload processed successfully");
     }
